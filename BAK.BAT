@@ -1,0 +1,1 @@
+xcopy . d:\chessbuilder /d/s

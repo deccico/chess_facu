@@ -1,0 +1,75 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Generator" content="Microsoft Word 97">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>#include "tablero</title>
+</head>
+<body>
+<font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>Proyecto Ajedrez</font></font>
+<br><font face="Courier New"><font size=-1>Grupo 14 Deccico-Fontdevila</font></font>
+<br><font face="Courier New"><font size=-1>archivo: tablero.cpp</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#include "tablero.h"</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>const int cTablero::mCantCasillas;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>cTablero::cTablero()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;for(int i=0;i&lt;= 63;
+i++)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tablero[i]= NULL;</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>cTablero::~cTablero()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mVaciar();</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>void cTablero::mVaciar()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;for( int i=0;i&lt;= 63;
+i++ ){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( tablero[i] != NULL )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+delete tablero[i];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tablero[i]= NULL;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>void cTablero::mImprimir(int
+indent)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; string tab="
+";</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; tab=""; //problemas
+con strngs en bc5++</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; for (int
+i=0;i&lt;indent;i++) tab+= ' ';</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; for (int
+i=0;i&lt;mCantCasillas;i++)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (i%8 == 0) {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cout &lt;&lt; endl &lt;&lt; tab &lt;&lt; abs(i/8 - 8) &lt;&lt; " |";</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( mHayPieza(i) )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mObtenerPieza(i)->mImprimir();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cout &lt;&lt; "&nbsp; ";</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cout &lt;&lt; '|';</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cout &lt;&lt;
+endl &lt;&lt; tab &lt;&lt; "&nbsp;&nbsp; a&nbsp; b&nbsp; c&nbsp; d&nbsp;
+e&nbsp; f&nbsp; g&nbsp; h " &lt;&lt; endl ;</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Generator" content="Microsoft Word 97">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>#include "pieza</title>
+</head>
+<body>
+/*
+<br>Proyecto Ajedrez
+<br>Grupo 14 Deccico-Fontdevila
+<br>archivo: pieza.cpp
+<br>*/
+<br>&nbsp;
+<p>#include &lt;iostream.h>
+<br>#include "str.h"
+<br>#include "pieza.h"
+<br>&nbsp;
+<p>//definicion de los m&eacute;todos declarados en pieza.h
+<br>&nbsp;
+<p>bool cPieza::mValidar(int mnPosicion,int nPosicion)
+<br>//Realiza varios chequeos antes de intentar cualquier moviento
+<br>{
+<br>&nbsp; if ((nPosicion &lt; 0) || (nPosicion > 63) || (nPosicion &lt;
+0) || (nPosicion > 63)
+<br>&nbsp; || (mnPosicion &lt; 0)||(mnPosicion > 63)||(mnPosicion &lt;
+0)||(mnPosicion > 63))
+<br>&nbsp;return false;
+<p>&nbsp; //verifica que no sea la misma posicion
+<br>&nbsp; if (mnPosicion == nPosicion)
+<br>&nbsp;return false;
+<p>&nbsp; return true; //opci&oacute;n por defecto
+<p>}//fin cPieza::MValidar
+<br>&nbsp;
+<p>bool cPieza::mEsMismaLinea(int nPos1,int nPos2,int nIncremento)
+<br>//chequea que se trate de misma linea horizontal, vertical
+<br>//o diagonal izquierda o derecha seg&uacute;n el tercer integer pasado
+<br>//Pre: nPos1 y nPos 2 son n&uacute;meros del 0 al 63
+<br>//Pos: true or false seg&pound;n corresponda
+<br>{
+<p>&nbsp; //si el incremento es de 1, verifica que ambas posiciones
+<br>&nbsp; //esten en la misma columna
+<br>&nbsp; if (nIncremento==1 &amp;&amp; abs(nPos2-nPos1)&lt;8)
+<br>&nbsp; { int n1=nPos1,n2=nPos2;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=0 &amp;&amp; n1 &lt;= 7 &amp;&amp; n2 >=0
+&amp;&amp; n2 &lt;= 7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=8 &amp;&amp; n1 &lt;= 15 &amp;&amp; n2
+>=8 &amp;&amp; n2 &lt;= 15)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=16 &amp;&amp; n1 &lt;= 23 &amp;&amp; n2
+>=16 &amp;&amp; n2 &lt;= 23)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=24 &amp;&amp; n1 &lt;= 31 &amp;&amp; n2
+>=24 &amp;&amp; n2 &lt;= 31)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=32 &amp;&amp; n1 &lt;= 39 &amp;&amp; n2
+>=32 &amp;&amp; n2 &lt;= 39)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=40 &amp;&amp; n1 &lt;= 47 &amp;&amp; n2
+>=40 &amp;&amp; n2 &lt;= 47)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=48 &amp;&amp; n1 &lt;= 55 &amp;&amp; n2
+>=48 &amp;&amp; n2 &lt;= 55)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=56 &amp;&amp; n1 &lt;= 63 &amp;&amp; n2
+>=56 &amp;&amp; n2 &lt;= 63)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; return false;&nbsp; // si ambas posiciones no estaban
+en la misma fila
+<br>&nbsp;&nbsp;&nbsp; }
+<p>&nbsp; int nSearch,nSearch1,nSearch2; //casillas sobre la cuales se
+realizar&aacute; la busqueda
+<br>&nbsp;
+<br>&nbsp; //chequeo para columna vertical y diagonales
+<br>&nbsp; switch (nIncremento)
+<br>&nbsp; { case 8: //columna vertical
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for (int i=0; i&lt;8; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp; nSearch1=nPos1+nIncremento*i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nSearch2=nPos2+nIncremento*i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( nSearch1==nPos2 || nSearch2==nPos1 )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;
+<br>&nbsp;&nbsp;&nbsp; default: //diagonales (nincremento 7 o 9)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (! ( (mEsMismaLinea(nPos1,0,8) &amp;&amp; nIncremento==7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|| (mEsMismaLinea(nPos1,7,8) &amp;&amp; nIncremento==9) ) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for (int i=0; i&lt;8; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp; nSearch=nPos1+nIncremento*i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( nSearch==nPos2 )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( ( mEsMismaLinea(nSearch,0,8) &amp;&amp; nIncremento==7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|| ( mEsMismaLinea(nSearch,7,8) &amp;&amp; nIncremento==9) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(! ( (mEsMismaLinea(nPos2,0,8) &amp;&amp; nIncremento==7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|| (mEsMismaLinea(nPos2,7,8) &amp;&amp; nIncremento==9) ) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for (int i=0; i&lt;8; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{&nbsp; nSearch=nPos2+nIncremento*i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( nSearch==nPos1 )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( ( mEsMismaLinea(nSearch,0,8) &amp;&amp; nIncremento==7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|| ( mEsMismaLinea(nSearch,7,8) &amp;&amp; nIncremento==9) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp; }//fin switch
+<p>&nbsp; return false;&nbsp; //caso por defecto, en caso de no encontrar
+true
+<p>} //fin cPieza::EsMismaLinea
+<br>&nbsp;
+<p>void cPieza::mGenerarLineaMovidas(int* &amp;rnVec, int nPos, int nIncremento,
+int &amp;nLong)
+<br>//devuelve movidas para la linea especificada;
+<br>{
+<br>&nbsp; //si el incremento es de 1, recorre la horizontal indicada
+<br>&nbsp; if (nIncremento==1)
+<br>&nbsp; { int n1=nPos,ndesde,nhasta;
+<br>&nbsp;&nbsp;&nbsp; if (n1 >=0 &amp;&amp; n1 &lt;= 7)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=0;nhasta=7;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=8 &amp;&amp; n1 &lt;= 15)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=8;nhasta=15;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=16 &amp;&amp; n1 &lt;= 23)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=16;nhasta=23;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=24 &amp;&amp; n1 &lt;= 31)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=24;nhasta=31;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=32 &amp;&amp; n1 &lt;= 39)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=32;nhasta=39;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=40 &amp;&amp; n1 &lt;= 47)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=40;nhasta=47;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=48 &amp;&amp; n1 &lt;= 55)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=48;nhasta=55;}
+<br>&nbsp;&nbsp;&nbsp; else if (n1 >=56 &amp;&amp; n1 &lt;= 63)
+<br>&nbsp;&nbsp;&nbsp; {ndesde=56;nhasta=63;}
+<p>&nbsp;&nbsp;&nbsp; for (int i=ndesde,j=0; i &lt;= nhasta; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (i != n1)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {rnVec[j]= i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; j++;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<p>&nbsp;&nbsp;&nbsp; nLong=7;
+<br>&nbsp;&nbsp;&nbsp; return;
+<br>&nbsp; }&nbsp;&nbsp; //fin nIncremento = 1
+<br>&nbsp;
+<p>&nbsp; int i=nLong, n;
+<p>&nbsp; if (! ( (mEsMismaLinea(nPos,0,8) &amp;&amp; nIncremento==7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || (mEsMismaLinea(nPos,7,8) &amp;&amp;
+nIncremento==9) ) )
+<br>&nbsp; { for (n=1; n &lt; 8; n++)
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nSearch=nPos+nIncremento*n;&nbsp;
+//casilla a analizar. Posiblemente jugada valida.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nSearch >63 || nSearch &lt;
+0)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rnVec[i]= nPos+nIncremento*n;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i++;
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( (mEsMismaLinea(nSearch,0,8)
+&amp;&amp; nIncremento==7)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || (mEsMismaLinea(nSearch,7,8)
+&amp;&amp; nIncremento==9) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; nLong=i;
+<br>&nbsp; }
+<p>&nbsp; i=nLong;
+<p>&nbsp; if (! ( (mEsMismaLinea(nPos,0,8) &amp;&amp; nIncremento==9)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || (mEsMismaLinea(nPos,7,8) &amp;&amp;
+nIncremento==7) ) )
+<br>&nbsp; { for (n=1; n &lt; 8; n++)
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nSearch=nPos-nIncremento*n;&nbsp;
+//casilla a analizar. Posiblemente jugada valida.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nSearch >63 || nSearch &lt;0)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rnVec[i]= nSearch;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i++;
+<br>&nbsp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( (mEsMismaLinea(nSearch,0,8)
+&amp;&amp; nIncremento==9)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; || (mEsMismaLinea(nSearch,7,8)
+&amp;&amp; nIncremento==7) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; nLong=i;
+<br>&nbsp; }
+<p>}//fin GenerarLineaMovidas
+<br>&nbsp;
+<p>void cPieza::mCalcularMovidasRCP(int* &amp;rnMovidas,int nPos,int &amp;rnLong,char
+sPieza)
+<br>//devuelve un array con todos las movidas posibles para un Rey-Caballo-Peon
+<br>//pre nDesde y nHasta son casillas validas y nDesde &lt; nHasta
+<br>//post referencia al array deseado
+<br>{
+<br>&nbsp; int nMovidas[20];
+<p>&nbsp;&nbsp; //movidas del caballo
+<br>&nbsp; nMovidas[0]=nPos-10;
+<br>&nbsp; nMovidas[1]=nPos+6;
+<br>&nbsp; nMovidas[2]=nPos-17;
+<br>&nbsp; nMovidas[3]=nPos+15;
+<br>&nbsp; nMovidas[4]=nPos-15;
+<br>&nbsp; nMovidas[5]=nPos+17;
+<br>&nbsp; nMovidas[6]=nPos-6;
+<br>&nbsp; nMovidas[7]=nPos+10;
+<p>&nbsp;&nbsp; //movidas de rey
+<br>&nbsp; nMovidas[8]=nPos-9;
+<br>&nbsp; nMovidas[9]=nPos-1;
+<br>&nbsp; nMovidas[10]=nPos+7;
+<br>&nbsp; nMovidas[11]=nPos-8;
+<br>&nbsp; nMovidas[12]=nPos+8;
+<br>&nbsp; nMovidas[13]=nPos-7;
+<br>&nbsp; nMovidas[14]=nPos+1;
+<br>&nbsp; nMovidas[15]=nPos+9;
+<p>&nbsp;&nbsp; //movidas de pe&oacute;n negro
+<br>&nbsp; nMovidas[16]=nPos+7;
+<br>&nbsp; nMovidas[17]=nPos+9;
+<p>&nbsp;&nbsp; //movidas de pe&oacute;n blanco
+<br>&nbsp; nMovidas[18]=nPos-9;
+<br>&nbsp; nMovidas[19]=nPos-7;
+<p>&nbsp; int nDesde,nHasta;
+<p>&nbsp; switch (sPieza)//analiza a cada pieza, chequea que las movidas
+sean consecutivas
+<br>&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'C'://caballo.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=7;&nbsp;&nbsp;&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,0,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=4;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,1,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,7,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,6,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=5;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'R'://rey
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=8;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=15;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,0,8))&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=11;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,7,8))&nbsp;&nbsp; //chequeo de borde derecho
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=12;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'n':nDesde=16;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=17;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,0,8))&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=17;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,7,8))&nbsp;&nbsp; //chequeo de borde derecho
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=16;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'b':nDesde=18;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=19;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,0,8))&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=19;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(nPos,7,8))&nbsp;&nbsp; //chequeo de borde derecho
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=18;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default:nDesde=0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=15;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp; }
+<p>&nbsp; int i,j;
+<br>&nbsp;
+<p>&nbsp; //recorre el vector de movidas posibles, para controlar la
+<br>&nbsp; //cantidad de valores validos y determinar la longitud de rnMovidas
+<br>&nbsp; for (i=nDesde,j=0; i&lt;=nHasta; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nMovidas[i] &lt;64 &amp;&amp; nMovidas[i]
+>=0)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {j++;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<p>&nbsp; rnLong=j;&nbsp; //longitud del vector de movidas validas
+<br>&nbsp; rnMovidas = new int[rnLong];
+<p>&nbsp; //recorre el vector de movidas posibles, para controlar la
+<br>&nbsp; //cantidad de valores validos y determinar la longitud de rnMovidas
+<br>&nbsp; for (i=nDesde,j=0; i&lt;=nHasta; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nMovidas[i] &lt;64 &amp;&amp; nMovidas[i]
+>=0)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { rnMovidas[j]=nMovidas[i];
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+j++;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p>}//fin CalcularMovidasValidasRCP
+<br>&nbsp;
+<p>//devuelve true o false si la movida es valida para la pieza especificada
+<br>//pre: nPos es la posicion de la pieza y sPieza es su simbolo
+<br>//post: true o false seg&uacute;n sea movida v&aacute;lida o no
+<br>bool cPieza::mEsMovidaValidaRCP(int mnPosicion, int nPos, char sPieza)
+const
+<br>{
+<br>&nbsp; int nMovidas[20];
+<p>&nbsp;&nbsp; //movidas del caballo
+<br>&nbsp; nMovidas[0]=mnPosicion-10;
+<br>&nbsp; nMovidas[1]=mnPosicion+6;
+<br>&nbsp; nMovidas[2]=mnPosicion-17;
+<br>&nbsp; nMovidas[3]=mnPosicion+15;
+<br>&nbsp; nMovidas[4]=mnPosicion-15;
+<br>&nbsp; nMovidas[5]=mnPosicion+17;
+<br>&nbsp; nMovidas[6]=mnPosicion-6;
+<br>&nbsp; nMovidas[7]=mnPosicion+10;
+<p>&nbsp;&nbsp; //movidas de rey
+<br>&nbsp; nMovidas[8]=mnPosicion-9;
+<br>&nbsp; nMovidas[9]=mnPosicion-1;
+<br>&nbsp; nMovidas[10]=mnPosicion+7;
+<br>&nbsp; nMovidas[11]=mnPosicion-8;
+<br>&nbsp; nMovidas[12]=mnPosicion+8;
+<br>&nbsp; nMovidas[13]=mnPosicion-7;
+<br>&nbsp; nMovidas[14]=mnPosicion+1;
+<br>&nbsp; nMovidas[15]=mnPosicion+9;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//segmento de peones en desuso,
+<br>&nbsp;&nbsp; //movidas de pe&oacute;n negro
+<br>&nbsp; nMovidas[16]=mnPosicion+7;
+<br>&nbsp; nMovidas[17]=mnPosicion+9;
+<p>&nbsp;&nbsp; //movidas de pe&oacute;n blanco
+<br>&nbsp; nMovidas[18]=mnPosicion-9;
+<br>&nbsp; nMovidas[19]=mnPosicion-7;
+<p>&nbsp; int nDesde,nHasta;
+<p>&nbsp; switch (sPieza)//analiza a cada pieza, chequea que las movidas
+sean consecutivas
+<br>&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'C'://caballo.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=7;&nbsp;&nbsp;&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,0,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=4;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,1,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,7,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,6,8))
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=5;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'R'://rey
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=8;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=15;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,0,8))&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=11;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,7,8))&nbsp;&nbsp; //chequeo de borde derecho
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=12;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'n':nDesde=16;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=17;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,0,8))&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=17;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,7,8))&nbsp;&nbsp; //chequeo de borde derecho
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=16;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'b':nDesde=18;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=19;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,0,8))&nbsp;&nbsp; //chequeo de borde izquierdo
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nDesde=19;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mEsMismaLinea(mnPosicion,7,8))&nbsp;&nbsp; //chequeo de borde derecho
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=18;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default:nDesde=0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nHasta=15;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+break;
+<br>&nbsp;&nbsp; }
+<p>&nbsp; int i,j;
+<p>&nbsp; //recorre el vector de movidas posibles, para controlar la
+<br>&nbsp; //cantidad de valores validos y determinar la longitud de rnMovidas
+<br>&nbsp; for (i=nDesde,j=0; i&lt;=nHasta; i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nMovidas[i] &lt;64 &amp;&amp; nMovidas[i]
+>=0)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nPos==nMovidas[i])
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<p>&nbsp; return false; //caso por defecto
+<br>}//fin CalcularMovidasValidasRCP
+<br>&nbsp;
+<br>&nbsp;
+<p>bool cRey::mEsMovidaValida(int mnPosicion, int nPosicion, bool ocupado,
+bool ataca) const
+<br>//Pre:Posicion=Coordenada valida del tablero
+<br>//Post:Devuelve true o false segun la movida sea o no valida
+<br>{
+<br>&nbsp; if (mValidar(mnPosicion,nPosicion)==false)&nbsp;&nbsp; //validaci&oacute;n
+inicial
+<br>&nbsp;&nbsp;&nbsp; return false;
+<br>&nbsp;
+<br>&nbsp; if (mEsMovidaValidaRCP(mnPosicion,nPosicion, msSimbolo) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<p>} //fin cRey::EsMovidaValida
+<br>&nbsp;
+<p>void cRey::mCalcularMovidasValidas(int* &amp;nMovidas, int &amp;nLong,
+char sCPeon)
+<br>//devuelve una referencia con una lista de movidas validas de la pieza
+<br>//y la longitud
+<br>{
+<br>&nbsp; mCalcularMovidasRCP(nMovidas, mnPos, nLong, 'R');
+<br>&nbsp;}
+<br>&nbsp;
+<p>bool cDama::mEsMovidaValida(int mnPosicion,int nPosicion,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool ocupado, bool ataca) const
+<br>//Pre:Posicion=Coordenada valida del tablero
+<br>//Post:Devuelve true o false segun la movida sea o no valida
+<br>{
+<br>&nbsp; if (ocupado) return false;
+<br>&nbsp; if (!mValidar(mnPosicion,nPosicion))&nbsp;&nbsp; //validaci&oacute;n
+inicial
+<br>&nbsp;return false;
+<p>&nbsp; //busca si las posiciones corresponden a la misma diagonal o
+columna
+<br>&nbsp; if (mEsMismaLinea(mnPosicion, nPosicion,1)) //columna horizontal
+<br>&nbsp;return true;
+<br>&nbsp; if (mEsMismaLinea(mnPosicion, nPosicion,7)) //diagonal izquierda
+<br>&nbsp;return true;
+<br>&nbsp; if (mEsMismaLinea(mnPosicion, nPosicion,8)) //columna vertical
+<br>&nbsp;return true;
+<br>&nbsp; if (mEsMismaLinea(mnPosicion, nPosicion,9)) //diagonal derecha
+<br>&nbsp;return true;
+<p>&nbsp; return false;&nbsp; //si no encuentra la casilla en ninguna columna
+o diagonal
+<br>} //fin cDama::mEsMovidaValida(int nPosicion)
+<br>&nbsp;
+<p>void cDama::mCalcularMovidasValidas(int* &amp;nMovidas, int &amp;nLong,
+char sCPeon)
+<br>//devuelve una referencia con una lista de movidas validas de la pieza
+<br>//y la longitud
+<br>{
+<br>&nbsp; nMovidas = new int[28];
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 1, nLong);
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 7, nLong);
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 8, nLong);
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 9, nLong);
+<br>}
+<br>&nbsp;
+<br>&nbsp;
+<p>bool cTorre::mEsMovidaValida(int mnPosicion,int nPosicion,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool ocupado, bool ataca) const
+<br>//Pre:Posicion=Coordenada valida del tablero
+<br>//Post:Devuelve true o false segun la movida sea o no valida
+<br>{
+<br>&nbsp; if (ocupado==true) return false;
+<br>&nbsp; if ( !mValidar(mnPosicion,nPosicion) )&nbsp;&nbsp; //validaci&oacute;n
+inicial
+<br>&nbsp;return false;
+<p>&nbsp; //busca si las posiciones corresponden a la misma columna hor.
+o vert.
+<br>&nbsp; if ( mEsMismaLinea(mnPosicion, nPosicion,1) ) //columna horizontal
+<br>&nbsp;return true;
+<br>&nbsp; if ( mEsMismaLinea(mnPosicion, nPosicion,8) ) //columna vertical
+<br>&nbsp;return true;
+<p>&nbsp; return false;&nbsp; //si no encuentra la casilla en ninguna columna
+o diagonal
+<br>} //fin cTorre::mEsMovidaValida(int nPosicion)
+<br>&nbsp;
+<p>void cTorre::mCalcularMovidasValidas(int* &amp;nMovidas, int &amp;nLong,char
+sCPeon)
+<br>//devuelve una referencia con una lista de movidas validas de la pieza
+<br>//y la longitud
+<br>{
+<br>&nbsp; nMovidas = new int[16];
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 1, nLong);
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 8, nLong);
+<br>}
+<br>&nbsp;
+<p>bool cAlfil::mEsMovidaValida(int mnPosicion,int nPosicion,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool ocupado, bool ataca) const
+<br>//Pre:Posicion=Coordenada valida del tablero
+<br>//Post:Devuelve true o false segun la movida sea o no valida
+<br>{
+<br>&nbsp; if (ocupado) return false;
+<br>&nbsp; if (!mValidar(mnPosicion,nPosicion))&nbsp;&nbsp; //validaci&oacute;n
+inicial
+<br>&nbsp;return false;
+<p>&nbsp; //busca si las posiciones corresponden a la misma diagonal derecha
+o izquierda
+<br>&nbsp; if (mEsMismaLinea(mnPosicion, nPosicion,7)) //diagonal&nbsp;
+izquierda
+<br>&nbsp;return true;
+<br>&nbsp; if (mEsMismaLinea(mnPosicion, nPosicion,9)) //diagonal derecha
+<br>&nbsp;return true;
+<p>&nbsp; return false;&nbsp; //si no encuentra la casilla en ninguna columna
+o diagonal
+<br>} //fin cAlfil::mEsMovidaValida
+<br>&nbsp;
+<p>void cAlfil::mCalcularMovidasValidas(int* &amp;nMovidas, int &amp;nLong,char
+sCPeon)
+<br>//devuelve una referencia con una lista de movidas validas de la pieza
+<br>//y la longitud
+<br>{
+<br>&nbsp; nMovidas = new int[16];
+<br>&nbsp; nLong=0;
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 7, nLong);
+<br>&nbsp; mGenerarLineaMovidas(nMovidas, mnPos, 9, nLong);
+<br>}
+<br>&nbsp;
+<br>&nbsp;
+<p>bool cCaballo::mEsMovidaValida(int mnPosicion,int nPosicion,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool ocupado, bool ataca) const
+<br>//Pre:Posicion=Coordenada valida del tablero
+<br>//Post:Devuelve true o false segun la movida sea o no valida
+<br>{
+<br>&nbsp; if ( !mValidar(mnPosicion,nPosicion) )&nbsp;&nbsp; //validaci&oacute;n
+inicial
+<br>&nbsp;return false;
+<p>&nbsp; if (mEsMovidaValidaRCP(mnPosicion,nPosicion, msSimbolo) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<p>}//fin cCaballo:mEsMovidaValida
+<br>&nbsp;
+<p>void cCaballo::mCalcularMovidasValidas(int* &amp;nMovidas,int &amp;nLong,char
+sCPeon)
+<br>//devuelve una referencia con una lista de movidas validas de la pieza
+<br>//y la longitud
+<br>{
+<br>&nbsp;&nbsp; mCalcularMovidasRCP(nMovidas, mnPos, nLong, 'C');
+<br>}
+<br>&nbsp;
+<p>bool cPeon::mEsMovidaValida(int mnPosicion,int nPosicion,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool ocupado, bool ataca) const {
+<br>&nbsp;&nbsp;&nbsp; if ( msColor == 'n' )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mEsMovidaValidaColor(mnPosicion,nPosicion,ocupado,ataca);
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Invierto mnPosicion y
+nPosicion para cambiar la dir.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mEsMovidaValidaColor(nPosicion,mnPosicion,ocupado,ataca);
+<br>}
+<br>&nbsp;
+<p>bool cPeon::mEsMovidaValidaColor(int mnPosicion,int nPosicion,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bool ocupado, bool ataca) const
+<br>//Pre:Posicion=Coordenada valida del tablero
+<br>//Post:Devuelve true o false segun la movida sea o no valida
+<br>{
+<br>&nbsp; if ( !mValidar(mnPosicion,nPosicion) )&nbsp;&nbsp; //validaci&oacute;n
+inicial
+<br>&nbsp;return false;
+<p>&nbsp; //chequea que la posicion dada coincida con una de las casillas
+<br>&nbsp; //a la que puede moverse, dada su condici&oacute;n de pe&oacute;n.
+<p>&nbsp; if ( nPosicion == mnPosicion + 8 )//chequea que sea la casilla
+de delante
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<p>&nbsp; //caso de movida inicial, dos pasos
+<br>&nbsp; if ( (7 &lt; mnPosicion &amp;&amp; mnPosicion &lt; 16 ||
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 47 &lt; nPosicion
+&amp;&amp; nPosicion &lt; 56) &amp;&amp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nPosicion == mnPosicion
++ 16 )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;
+<br>&nbsp; //cheque del borde del tablero
+<br>&nbsp; if ( mEsMismaLinea(mnPosicion,0,8) &amp;&amp; nPosicion==mnPosicion+7
+<br>&nbsp; || mEsMismaLinea(mnPosicion,7,8) &amp;&amp; nPosicion==mnPosicion+9
+)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<p>&nbsp; if (ataca)&nbsp;&nbsp;&nbsp;&nbsp; //chequea que el pe&oacute;n
+ataque a una pieza contraria
+<br>&nbsp;&nbsp; if ( nPosicion==(mnPosicion+7) || nPosicion==(mnPosicion+9)
+)
+<br>&nbsp;&nbsp;&nbsp; return true;
+<p>&nbsp; return false;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //si no se cumple
+ninguna de las anteriores
+<p>}//fin cPe&oacute;n::mEsMovidaValidaColor
+<br>&nbsp;
+<p>void cPeon::mCalcularMovidasValidas(int* &amp;nMovidas, int &amp;nLong,char
+sCPeon)
+<br>//devuelve una referencia con una lista de movidas validas de la pieza
+<br>//y la longitud
+<br>{
+<p>&nbsp; //sCPeon es el color del peon. Se trata de un caso especial pues
+<br>&nbsp; //captura a las piezas de modo diferente
+<br>&nbsp;&nbsp; mCalcularMovidasRCP(nMovidas, mnPos, nLong, msColor);
+<br>&nbsp;}
+<br>&nbsp;
+<p>/*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//&nbsp;&nbsp; m&oacute;dulos impulsores
+<br>void main()
+<br>{
+<br>&nbsp;int *Movidas,Longitud,posi;
+<br>&nbsp;cPieza *p = new cDama('b',32);
+<p>&nbsp;do
+<br>&nbsp;{
+<br>&nbsp;&nbsp; p->mCalcularMovidasValidas(Movidas,Longitud);
+<br>&nbsp;&nbsp; cout &lt;&lt; "La posicion es: " &lt;&lt; p->mObtenerPosicion()
+&lt;&lt; endl;
+<br>&nbsp;&nbsp; cout &lt;&lt; "La longitud es: " &lt;&lt; Longitud &lt;&lt;
+endl;
+<br>&nbsp;&nbsp; cout &lt;&lt; "La pieza es: " &lt;&lt;&nbsp; p->mObtenerSimbolo()&lt;&lt;
+endl&lt;&lt;endl;
+<p>&nbsp;&nbsp; for(int i=0,j=0;i&lt;Longitud;i++,j++)
+<br>&nbsp;&nbsp; {cout &lt;&lt;"Movida "&lt;&lt; i &lt;&lt;" "&lt;&lt;Movidas[i]
+&lt;&lt;endl;
+<br>&nbsp;&nbsp;&nbsp; if (j > 18)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { j=0;pausa(" ");}
+<br>&nbsp;&nbsp; }
+<br>&nbsp;&nbsp; cout &lt;&lt;"\n Pone una posicion: ";
+<br>&nbsp;&nbsp; cin >> posi;
+<br>&nbsp;&nbsp; p->mPonerPosicion(posi);
+<br>&nbsp;}while (posi&lt;=63 &amp;&amp; posi >= 0);
+<p>}
+<br>&nbsp;
+<br>&nbsp;
+<p>main()
+<br>{
+<br>&nbsp;int i,j;
+<br>&nbsp;cPieza *p = new cPeon('b',10);
+<p>&nbsp;do{
+<br>&nbsp;cout &lt;&lt; "\nLa pieza es: " &lt;&lt;&nbsp; p->mObtenerSimbolo()&lt;&lt;
+endl;
+<br>&nbsp;cout &lt;&lt; "Ingres&aacute; tus horribles valores i,j\n";
+<br>&nbsp;cin >> i;
+<br>&nbsp;cin >> j;
+<br>&nbsp;if (p->mEsMovidaValida(i,j,false,true)==true)
+<br>&nbsp;&nbsp; cout &lt;&lt; "trueismo";
+<br>&nbsp;else cout &lt;&lt; "faksseimo";
+<br>&nbsp;}while (i!=100);
+<br>}
+<p>*/
+<br>&nbsp;
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>clase cEjercito</title>
+</head>
+<body>
+/*
+<br>Proyecto Ajedrez
+<br>archivo: ejercito.cpp
+<br>Grupo 14 -Deccico/Fontdevila&nbsp; ayudante JAvier MAcchi
+<br>contiene la implementaci&oacute;n de la clase cEjercito
+<br>*/
+<br>&nbsp;
+<p>#include "ejercito.h"
+<p>cEjercito::cEjercito(char color)
+<br>{
+<br>&nbsp;mColor= color;
+<br>&nbsp;&nbsp;&nbsp; for (int i=0; i&lt;16 ;i++) piezas[i]= NULL;
+<br>}
+<p>void cEjercito::mArmar()
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; piezas[0]= new cTorre(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; piezas[1]= new cCaballo(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; piezas[2]= new cAlfil(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; piezas[3]= new cDama(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; piezas[4]= new cRey(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; piezas[5]= new cAlfil(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; piezas[6]= new cCaballo(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; piezas[7]= new cTorre(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for(int i=8;i&lt;16;i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas[i]= new cPeon(mColor);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>}
+<p>void cEjercito::mDesbandar()
+<br>{
+<br>&nbsp;&nbsp;&nbsp; for (int i=0 ;i&lt;16; i++) piezas[i]= NULL;
+<br>}
+<p>cPieza* cEjercito::mPrimera()
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; actual= -1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mSiguiente();
+<br>}
+<br>&nbsp;
+<p>cPieza* cEjercito::mSiguiente()
+<br>{
+<br>&nbsp;&nbsp;&nbsp; if ( actual == 15)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return NULL;
+<br>&nbsp;&nbsp;&nbsp; while( actual &lt; 15 &amp;&amp; piezas[++actual]
+== NULL );
+<br>&nbsp;&nbsp;&nbsp; return piezas[actual];
+<br>}
+<p>/*
+<br>La pieza p existe en el array piezas.
+<br>La posici&oacute;n del array piezas de valor igual a p queda en NULL.
+<br>*/
+<br>void cEjercito::mSacarPieza(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; int i= mBuscarPieza(p);
+<br>&nbsp;&nbsp;&nbsp; if ( i != -1 )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; piezas[i]= NULL;
+<br>}
+<p>cPieza* cEjercito::mCrearPieza(char simbolo,char color,int pos)
+<br>{
+<br>&nbsp;if ('P' == simbolo)
+<br>&nbsp; return ( new cPeon(color,pos) ) ;
+<br>&nbsp;if ('A' == simbolo)
+<br>&nbsp; return ( new cAlfil(color,pos) );
+<br>&nbsp;if ('C' == simbolo)
+<br>&nbsp; return ( new cCaballo(color,pos) );
+<br>&nbsp;if ('T' == simbolo)
+<br>&nbsp; return ( new cTorre(color,pos) );
+<br>&nbsp;if ('D' == simbolo)
+<br>&nbsp; return ( new cDama(color,pos) );
+<br>&nbsp;if ('R' == simbolo)
+<br>&nbsp; return ( new cRey(color,pos) );
+<br>&nbsp;return NULL;
+<br>}//fin mCrearPieza
+<br>&nbsp;
+<p>/*
+<br>La pieza es del mismo color y est&aacute; creada.
+<br>La pieza queda agregada a la lista de piezas del ejercito y
+<br>ser&aacute; devuelta por next() eventualmente.
+<br>*/
+<br>bool cEjercito::mAgregarPieza(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; if ( mAgregarRey(p) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if ( mAgregarDama(p) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if ( mAgregarAlfil(p) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if ( mAgregarCaballo(p) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if ( mAgregarTorre(p) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; if ( mAgregarPeon(p) )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>/*
+<br>Si es un rey, y no hay todav&iacute;a uno,
+<br>agrega la pieza y devuelve true, si no false.
+<br>*/
+<br>bool cEjercito::mAgregarRey( cPieza* p )
+<br>{
+<br>&nbsp;&nbsp;&nbsp; cRey* pRey= dynamic_cast&lt;cRey*>( p );
+<br>&nbsp;&nbsp;&nbsp; if ( pRey )
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( !piezas[4] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [4]= pRey;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;&nbsp;&nbsp; //p es un rey y ya hay uno
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>/*
+<br>Si es una dama, y no hay todav&iacute;a una,
+<br>agrega la pieza y devuelve true, si no false.
+<br>*/
+<br>bool cEjercito::mAgregarDama(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; cDama* pDama= dynamic_cast&lt;cDama*>( p );
+<br>&nbsp;&nbsp;&nbsp; if ( pDama )
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( !piezas[3] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [3]= pDama;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;&nbsp;&nbsp; //p es una dama y ya hay una
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>/*
+<br>Si es una torre, y no hay todav&iacute;a dos,
+<br>agrega la pieza y devuelve true, si no false.
+<br>*/
+<br>bool cEjercito::mAgregarTorre(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; cTorre* pTorre= dynamic_cast&lt;cTorre*>( p );
+<br>&nbsp;&nbsp;&nbsp; if ( pTorre )
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( !piezas[0] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [0]= pTorre;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( !piezas[7] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [7]= pTorre;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;&nbsp;&nbsp; //p es una torre y ya hay dos
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>/*
+<br>Si es un alfil, y no hay todav&iacute;a dos,
+<br>agrega la pieza y devuelve true, si no false.
+<br>*/
+<br>bool cEjercito::mAgregarAlfil(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; cAlfil* pAlfil= dynamic_cast&lt;cAlfil*>( p );
+<br>&nbsp;&nbsp;&nbsp; if ( pAlfil )
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( !piezas[2] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [2]= pAlfil;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( !piezas[5] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [5]= pAlfil;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;&nbsp;&nbsp; //p es un alfil y ya hay dos
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>/*
+<br>Si es un caballo, y no hay todav&iacute;a dos,
+<br>agrega la pieza y devuelve true, si no false.
+<br>*/
+<br>bool cEjercito::mAgregarCaballo(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; cCaballo* pCaballo= dynamic_cast&lt;cCaballo*>(
+p );
+<br>&nbsp;&nbsp;&nbsp; if ( pCaballo )
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( !piezas[1] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [1]= pCaballo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( !piezas[6] )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+piezas [6]= pCaballo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;&nbsp;&nbsp; //p es un caballo y ya hay dos
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>/*
+<br>Si es un pe&oacute;n, y no hay todav&iacute;a ocho,
+<br>agrega la pieza y devuelve true, si no false.
+<br>*/
+<br>bool cEjercito::mAgregarPeon(cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; cPeon* pPeon= dynamic_cast&lt;cPeon*>( p );
+<br>&nbsp;&nbsp;&nbsp; if ( pPeon )
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int cuenta= 7;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while( cuenta &lt; 15 &amp;&amp;
+piezas[++cuenta] != NULL );
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( piezas[cuenta] != NULL
+)&nbsp; //Si ya estaban todos los peones insertados
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; piezas[cuenta]= p;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;
+<br>&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp;&nbsp; else
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;
+<br>}
+<p>cEjercito::mBuscarPieza( cPieza* p)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; int i;
+<br>&nbsp;&nbsp;&nbsp; for ( i=0 ; i &lt; 16 &amp;&amp; piezas[i] != p;
+i++ );
+<br>&nbsp;&nbsp;&nbsp; if ( piezas[i] == p )
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return i;
+<br>&nbsp;&nbsp;&nbsp; return -1;
+<br>}
+<p>void cEjercito::mSerialize(ofstream&amp; o)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; for ( cPieza* p= mPrimera(); p ; p= mSiguiente()
+)
+<br>&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o.write(cTablero::mCalcularCasilla(
+p->mObtenerPosicion() ).c_str(),2);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string line= "=";
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; line+= p->mObtenerSimbolo();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; line+= p->mObtenerColor();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o.write(line.c_str() ,3
+);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o &lt;&lt; endl;
+<br>&nbsp;&nbsp;&nbsp; }
+<br>}
+<br>&nbsp;
+</body>
+</html>

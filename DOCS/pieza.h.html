@@ -1,0 +1,134 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>Clase cPieza - Proyecto Ajedrez</title>
+</head>
+<body>
+/*
+<br>Proyecto Ajedrez
+<br>Grupo 14 Deccico-Fontdevila
+<br>archivo: pieza.h
+<br>*/
+<br>&nbsp;
+<p>#ifndef _PIEZA_H_
+<br>#define _PIEZA_H_
+<p>#include &lt;fstream>
+<br>#include &lt;string>
+<p>class cPieza {
+<p>protected:
+<br>&nbsp;&nbsp; char msColor;
+<br>&nbsp;&nbsp; char msSimbolo;
+<br>&nbsp;&nbsp; int mnPos;
+<br>&nbsp;&nbsp; void mGenerarLineaMovidas(int* &amp;, int, int, int &amp;);
+<p>public:
+<br>//chequea que se trate de misma linea hor, ver o diagonal seg&uacute;n
+el tercer int
+<br>&nbsp;&nbsp; static bool mEsMismaLinea(int,int,int);
+<br>&nbsp;//validaciones comunes antes de validar una movida
+<br>&nbsp;&nbsp; static bool mValidar(int,int) ;
+<p>&nbsp;&nbsp; cPieza (char sColor)
+<br>&nbsp;&nbsp; {&nbsp; msColor= sColor;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mnPos= 0;
+<br>&nbsp;&nbsp; }
+<p>&nbsp;&nbsp; cPieza(char sColor, int npos)
+<br>&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msColor= sColor;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mnPos= npos;
+<br>&nbsp;&nbsp; }
+<p>&nbsp;&nbsp; virtual ~cPieza(){}
+<p>&nbsp;&nbsp; char mObtenerColor() const {return msColor;}
+<br>&nbsp;&nbsp; char mObtenerSimbolo() const {return msSimbolo;};
+<br>&nbsp;&nbsp; int mObtenerPosicion() const {return mnPos;}
+<br>&nbsp;&nbsp; void mPonerPosicion(int pos){ mnPos= pos; }
+<br>&nbsp;&nbsp; void mImprimir() const
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {cout &lt;&lt; mObtenerSimbolo();cout
+&lt;&lt; mObtenerColor();}
+<br>&nbsp;&nbsp; bool mEsMovidaValidaRCP(int mnPosicion, int nPos, char
+sPieza) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasRCP(int * &amp; nVec, int, int &amp;,
+char sPieza='*');
+<br>&nbsp;&nbsp; virtual bool mEsMovidaValida(int,int,bool=false,bool=false)
+const=0;
+<br>&nbsp;&nbsp; virtual void mCalcularMovidasValidas(int * &amp;, int
+&amp;, char sCPeon='*')=0;
+<p>};//fin cPieza
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p>//pieza Rey
+<br>class cRey: public cPieza
+<br>{
+<br>public:
+<br>&nbsp;&nbsp; //constructor
+<br>&nbsp;&nbsp; cRey::cRey(char sColor):cPieza(sColor) {msSimbolo='R';}
+<br>&nbsp;&nbsp; cRey::cRey(char sColor,int pos):cPieza(sColor,pos) {msSimbolo='R';}
+<br>&nbsp;&nbsp; virtual ~cRey(){}
+<br>&nbsp;&nbsp; bool mEsMovidaValida(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasValidas(int * &amp;, int &amp;, char);
+<br>};
+<p>//pieza Dama
+<br>class cDama: public cPieza
+<br>{
+<br>public:
+<br>&nbsp;&nbsp; //constructor
+<br>&nbsp;&nbsp; cDama::cDama(char sColor):cPieza(sColor) {msSimbolo='D';}
+<br>&nbsp;&nbsp; cDama::cDama(char sColor,int pos):cPieza(sColor,pos) {msSimbolo='D';}
+<br>&nbsp;&nbsp; virtual ~cDama(){}
+<br>&nbsp;&nbsp; bool mEsMovidaValida(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasValidas(int * &amp;, int &amp;, char);
+<br>};
+<p>//pieza Alfil
+<br>class cAlfil: public cPieza
+<br>{
+<br>public:
+<br>&nbsp;&nbsp; //constructor
+<br>&nbsp;&nbsp; cAlfil::cAlfil(char sColor):cPieza(sColor) {msSimbolo='A';}
+<br>&nbsp;&nbsp; cAlfil::cAlfil(char sColor,int pos):cPieza(sColor,pos)
+{msSimbolo='A';}
+<br>&nbsp;&nbsp; virtual ~cAlfil(){}
+<br>&nbsp;&nbsp; bool mEsMovidaValida(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasValidas(int * &amp;, int &amp;, char);
+<br>};
+<p>//pieza Caballo
+<br>class cCaballo: public cPieza
+<br>{
+<br>public:
+<br>&nbsp;&nbsp; //constructor
+<br>&nbsp;&nbsp; cCaballo::cCaballo(char sColor):cPieza(sColor) {msSimbolo='C';}
+<br>&nbsp;&nbsp; cCaballo::cCaballo(char sColor,int pos):cPieza(sColor,pos)
+{msSimbolo='C';}
+<br>&nbsp;&nbsp; virtual ~cCaballo(){}
+<br>&nbsp;&nbsp; bool mEsMovidaValida(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasValidas(int * &amp;, int &amp;, char);
+<br>};
+<p>//pieza Caballo
+<br>class cTorre: public cPieza
+<br>{
+<br>public:
+<br>&nbsp;&nbsp; //constructor
+<br>&nbsp;&nbsp; cTorre::cTorre(char sColor):cPieza(sColor) {msSimbolo='T';}
+<br>&nbsp;&nbsp; cTorre::cTorre(char sColor,int pos):cPieza(sColor,pos)
+{msSimbolo='T';}
+<br>&nbsp;&nbsp; virtual ~cTorre(){}
+<br>&nbsp;&nbsp; bool mEsMovidaValida(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasValidas(int * &amp;, int &amp;, char);
+<br>};
+<p>//pieza Peon
+<br>class cPeon: public cPieza
+<br>{
+<br>public:
+<br>&nbsp;&nbsp; //bool mEsMovidaValida(int,int) const;
+<br>&nbsp;&nbsp; //constructor
+<br>&nbsp;&nbsp; cPeon::cPeon(char sColor):cPieza(sColor) {msSimbolo='P';}
+<br>&nbsp;&nbsp; cPeon::cPeon(char sColor,int pos):cPieza(sColor,pos) {msSimbolo='P';}
+<br>&nbsp;&nbsp; virtual ~cPeon(){}
+<br>&nbsp;&nbsp; bool mEsMovidaValida(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; bool mEsMovidaValidaColor(int,int,bool,bool) const;
+<br>&nbsp;&nbsp; void mCalcularMovidasValidas(int * &amp;, int &amp;, char);
+<br>};
+<p>#endif
+<br>&nbsp;
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Generator" content="Microsoft Word 97">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>#ifndef _TABLERO_H_</title>
+</head>
+<body>
+<font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>Proyecto Ajedrez</font></font>
+<br><font face="Courier New"><font size=-1>Grupo 14 Deccico-Fontdevila</font></font>
+<br><font face="Courier New"><font size=-1>archivo: tablero.h</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#ifndef _TABLERO_H_</font></font>
+<br><font face="Courier New"><font size=-1>#define _TABLERO_H_</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#include &lt;fstream></font></font>
+<br><font face="Courier New"><font size=-1>#include &lt;string></font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#include "math.h"</font></font>
+<br><font face="Courier New"><font size=-1>#include "pieza.h"</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>class cTablero</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>protected:</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* tablero[64];</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>public:</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; static const int
+mCantCasillas= 64;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cTablero();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; ~cTablero();</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //Destruye todas
+las piezas.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; void mVaciar();</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; static int mCalcularCasilla(int
+col, int fila)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return fila*8 + col;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; /*</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; Devuelve la pos.
+a partir de la notaci&oacute;n tradicional.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; Columnas de a hasta
+h, filas de 1 hasta 8.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; */</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; static int mCalcularCasilla(char
+col, char fila){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return abs( (int)(fila-'0') - 8 )*8 + (int)(col-'a') ;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; /*</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; Devuelve la pos.
+a partir de la notaci&oacute;n tradicional.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; Columnas de a hasta
+h, filas de 1 hasta 8.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; */</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; static int mCalcularCasilla(const
+string &amp;sCasilla)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return mCalcularCasilla( (char)sCasilla[0], (char)sCasilla[1] );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; static string mCalcularCasilla(int
+cas)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+string fila,col;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fila= '0'+abs(cas/8 - 8);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+col= 'a'+(char)cas % 8;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return (col+fila);</font></font>
+<br><font face="Courier New"><font size=-1>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return string(col+fila);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; void mPonerPieza(cPieza
+*p, int casilla)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tablero[casilla]= p;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (p) p->mPonerPosicion(casilla);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; void mPonerPieza(cPieza
+* p,char col,char fila)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tablero[mCalcularCasilla(col,fila)]= p;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (p) p->mPonerPosicion(mCalcularCasilla(col,fila));</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; void mPonerPieza(cPieza
+* p, const string&amp; sCasilla)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tablero[mCalcularCasilla(sCasilla)]= p;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (p) p->mPonerPosicion(mCalcularCasilla(sCasilla));</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mObtenerPieza(int
+casilla)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return tablero[casilla];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mObtenerPieza(char
+col, char fila)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return tablero[mCalcularCasilla(col,fila)];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mObtenerPieza(
+const string&amp; sCasilla )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return tablero[mCalcularCasilla(sCasilla)];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //Devuelve la pieza
+en casilla y deja la casilla en NULL</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mSacarPieza(int
+casilla)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cPieza* aux= tablero[casilla];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tablero[casilla]= NULL;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return aux;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mSacarPieza(char
+col,char fila){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return mSacarPieza( mCalcularCasilla(col,fila) );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mSacarPieza(
+const string&amp; sCasilla){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return mSacarPieza( mCalcularCasilla(sCasilla) );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mHayPieza(int
+casilla){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return tablero[casilla] != NULL;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mHayPieza(
+const string&amp; sCasilla){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return tablero[mCalcularCasilla( sCasilla)] != NULL;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; void mImprimir(int
+indent=10);</font></font>
+<br><font face="Courier New"><font size=-1>};</font></font>
+<br><font face="Courier New"><font size=-1>//End of class cTablero</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#endif</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;
+</body>
+</html>

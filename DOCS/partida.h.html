@@ -1,0 +1,106 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Generator" content="Microsoft Word 97">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>#ifndef _PARTIDA_H_</title>
+</head>
+<body>
+<font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>Proyecto Ajedrez</font></font>
+<br><font face="Courier New"><font size=-1>Grupo 14 Deccico-Fontdevila</font></font>
+<br><font face="Courier New"><font size=-1>archivo: partida.h</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#ifndef _PARTIDA_H_</font></font>
+<br><font face="Courier New"><font size=-1>#define _PARTIDA_H_</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#include &lt;fstream></font></font>
+<br><font face="Courier New"><font size=-1>#include &lt;string></font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#include "conio.h"</font></font>
+<br><font face="Courier New"><font size=-1>#include "ejercito.h"</font></font>
+<br><font face="Courier New"><font size=-1>#include "tablero.h"</font></font>
+<br><font face="Courier New"><font size=-1>#include "str.h"</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>class cPartida</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>protected:</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; //A qu&eacute;
+color de pieza le toca jugar.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; char msJuega;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; int mnPosVieja,
+mnPosNueva;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mEnroqueNegroIzq;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mEnroqueNegroDer;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mEnroqueBlancoIzq;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mEnroqueBlancoDer;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; void mSetEnroque(string);
+//actualiza el ctrl de posibilidad de enroque</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mEnroqueNoValido(char,char);
+//controlar la posibilidad de enrocar</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mEnroque(int);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cPieza* mpBackupPieza;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cTablero mTablero;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cEjercito mBlancas;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cEjercito mNegras;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; static cPieza*
+mCrearPieza(char color,char simbolo);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; void cPartida::mArmarBando(char
+color);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mHayBloqueo(int,
+int);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool mChequear(int,int,int);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; char mElegir();&nbsp;
+//eleccion de pieza cuando se corona</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; int mBuscarPieza(int);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; int mBuscarPieza(int,int);</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>public:</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cPartida();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cPartida(bool
+conpiezas= true);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; ~cPartida(){}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cEjercito&amp;
+mObtenerEjercito(char color)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return color == 'b' ? mBlancas : mNegras;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cEjercito&amp;
+mObtenerEjercitoActivo()</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return msJuega == 'b' ? mBlancas : mNegras;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; char mContrario(char
+c){return c == 'b' ? 'n':'b'; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mImprimir();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mCargar(string
+filename="default.css");</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mGuardar(string
+filename);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mEsMovidaValida(const
+string &amp;c1, const string &amp;c2);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mEsMovidaValida(int,
+int);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mMover(const
+string &amp;c1, const string &amp;c2);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mEstaClavado(const
+string &amp;c1, const string &amp;c2);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mDeshacerMovida();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mVaciar();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mSiguienteMovida()</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{msJuega= msJuega == 'b'? 'n': 'b';&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; void mSiguienteMovida(char
+c)&nbsp; {msJuega= c;}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; char mMueven()
+const {return msJuega;}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mHayJaque();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mHayMate();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mDeshacer(int,int);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; bool mCoronarPeon(const
+string&amp; cFinal);</font></font>
+<br><font face="Courier New"><font size=-1>};</font></font>
+<br><font face="Courier New"><font size=-1>//End of class Partida</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#endif</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;
+</body>
+</html>

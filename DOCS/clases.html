@@ -1,0 +1,84 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>Trabajo Pr&aacute;ctico 1 - Algoritmos y  Programaci&oacute;n III</title>
+</head>
+<body text="#E0E000" bgcolor="#000000" link="#00B045" vlink="#007040">
+<a href="#pieza" target="main">Pieza
+</a><a href="#tablero" target="main">Tablero
+</a><a href="#partida" target="main">Partida </a><a href="#ejercito" target="main">Ejercito</a>
+<br>&nbsp;
+<br>&nbsp;
+<p><a NAME="pieza"></a><u><font size=+1>Pieza</font></u>
+<p>Cada pieza conoce su <b>color</b>, su <b>s&iacute;mbolo</b> y su <b>ubicaci&oacute;n</b>
+en el tablero.
+<p>A trav&eacute;s de los m&eacute;todos abstractos <b>mEsMovidaValida</b>
+y <b>mCalcularMovidasValidas</b> (redefinidos&nbsp; por cada pieza) puede
+decidir si una m&oacute;vida es v&aacute;lida para una pieza dada su posici&oacute;n
+en el tablero o devolver un array con una lista de m&oacute;vidas v&aacute;lidas
+de una pieza.
+<p>El m&eacute;todo <b>mEsMovidaValida</b> es usado por <b>mEsMovidaValida</b>
+(adem&aacute;s de <b>mHayJaque</b> y <b>mHayMate</b>) de cPartida y se
+usa para decidir si una movida es v&aacute;lida teniendo en cuenta su posici&oacute;n
+en el tablero y la posici&oacute;n de las otras piezas (por par&aacute;metros).
+Este m&eacute;todo accede a la informaci&oacute;n de si existe una pieza
+bloqueando el destino o en el destino existe una pieza rival a trav&eacute;s
+de sendos par&aacute;metro que recibe cuando se la invoca.
+<p>El vector que devuelve <b>mCalcularMovidasValidas</b> lo usar&aacute;
+el m&eacute;todo <b>mHayMate</b> de la clase <b>cPartida</b>. Se trata
+de un array con todas las posibles movidas para una pieza dada su posici&oacute;n
+y sin tener en cuenta la posici&oacute;n de otras piezas.
+<p>Adem&aacute;s, cada pieza mediante sus m&eacute;todos p&uacute;blicos
+puede imprimir en pantalla una representaci&oacute;n simple de ella misma
+(ejemplo <b>&acute;Pn&acute;</b> o <b>&acute;Cb&acute;</b>) para un pe&oacute;n
+negro o caballo blanco. Adem&aacute;s puede devolver solo su color, o posici&oacute;n
+o puede establecer su propia posici&oacute;n
+<p>
+<hr WIDTH="100%">
+<p><a NAME="tablero"></a><u><font size=+1>Tablero</font></u>
+<p>Es solamente una estructura de datos que contiene piezas en una grilla
+de 8x8, y su comportamiento est&aacute; restringido b&aacute;sicamente
+a agregar, obtener y sacar Piezas.
+<p>Nota: Exporta una interface completa aceptando identificadores de casilla
+en notaci&oacute;n tradicional("a2") con par&aacute;metros char o string,
+o como enteros correlativos de 0 a 63(que es como las trata internamente).
+<p>
+<hr WIDTH="100%">
+<p><a NAME="partida"></a><u><font size=+1>Partida</font></u>
+<p>Es la &uacute;nica clase que sabe jugar al ajedrez. Dispone las piezas
+en el tablero, recuerda a qui&eacute;n le toca jugar y valida las movidas.
+Adem&aacute;s establece si hay jaque, mate puede deshacer una movida o
+decidir si es posible enrocar y hacerlo eventualmente.
+<p>Nota: Permite grabar y cargar una partida. En &acute;default.css&acute;
+se encuentra la configuraci&oacute;n inicial. La cual se usa en el men&uacute;
+-Nuevo.
+<p>
+<hr WIDTH="100%">
+<p><a NAME="ejercito"></a><u><font size=+1>Ejercito</font></u>
+<p>Las instancias de esta clase representan a cada uno de los bandos que
+participan de la partida. Implementa la funcionalidad de iterar a trav&eacute;s
+de todas las piezas que pertenecen a &eacute;l, que permite poner un ej&eacute;rcito
+completo en el tablero al comenzar la partida y chequear todas las posibles
+movidas para probar el jaque y el mate, agregar y quitar piezas, crear
+una pieza a partir de un token identificador de la clase espec&iacute;fica
+de pieza que se necesita, y serializarse.
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

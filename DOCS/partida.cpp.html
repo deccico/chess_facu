@@ -1,0 +1,784 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Generator" content="Microsoft Word 97">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>//System includes</title>
+</head>
+<body>
+<font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>Proyecto Ajedrez</font></font>
+<br><font face="Courier New"><font size=-1>archivo: partida.cpp</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>contiene la implementaci&oacute;n
+de la clase cPartida</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>#include "partida.h"</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>cPartida::cPartida( bool conpiezas
+)</font></font>
+<br><font face="Courier New"><font size=-1>:mBlancas('b'),mNegras('n')</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mEnroqueNegroIzq=false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mEnroqueNegroDer=false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mEnroqueBlancoIzq=false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mEnroqueBlancoIzq=false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; msJuega=
+'b';</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mpBackupPieza=
+NULL;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if ( conpiezas
+)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mArmarBando('b');</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mArmarBando('n');</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>}//fin Constructor por default
+de Partida.</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>void cPartida::mVaciar()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mBlancas.mDesbandar();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mNegras.mDesbandar();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mTablero.mVaciar();</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>void cPartida::mGuardar(string
+filename)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; ofstream
+out(filename.c_str());</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; if
+(!out)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cout &lt;&lt; "No se pudo guardar la partida en el archivo: " &lt;&lt;
+filename &lt;&lt; endl;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; out
+&lt;&lt; msJuega &lt;&lt; endl;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; mBlancas.mSerialize(out);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; mNegras.mSerialize(out);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; out.close();</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>/**</font></font>
+<br><font face="Courier New"><font size=-1>Agrega las piezas al atributo
+ejercito correspondiente y</font></font>
+<br><font face="Courier New"><font size=-1>agrega esas piezas al tablero.</font></font>
+<br><font face="Courier New"><font size=-1>**/</font></font>
+<br><font face="Courier New"><font size=-1>void cPartida::mArmarBando(char
+color){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //agrego
+las todas piezas al ejercito.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mObtenerEjercito(color).mArmar();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; int posInicial=
+0;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cPieza* p=
+mNegras.mPrimera();;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (color
+== 'b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+posInicial= 48;&nbsp;&nbsp;&nbsp;&nbsp; //Casilla a2</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//recorre el ejercito hasta el primer peon.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for ( p= mBlancas.mPrimera();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p &amp;&amp; !dynamic_cast&lt;cPeon*>(p);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p= mBlancas.mSiguiente() );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; for (int
+i=0;i&lt;8;i++)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mPonerPieza(p,i+posInicial);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p= mObtenerEjercito(color).mSiguiente();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; posInicial+=
+8;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (color
+== 'b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p= mBlancas.mPrimera();</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; for (int i=0;i
+&lt; 8; i++,p= mObtenerEjercito(color).mSiguiente() )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mPonerPieza( p, posInicial+i );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>void cPartida::mImprimir()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mTablero.mImprimir();</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//La primera linea informa a
+quien le toca jugar.</font></font>
+<br><font face="Courier New"><font size=-1>// El formato de las siguientes
+lineas es, por ej.</font></font>
+<br><font face="Courier New"><font size=-1>// 'a1=Tb' - En la casilla a1
+se encuentra la una torre blanca.</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mCargar( string
+filename )</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;const int max_length=
+6;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; ifstream
+in(filename.c_str());</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (!in)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;char line[max_length];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; in.getline(line,max_length);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //Selecciona
+a que bando le toca mover</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; msJuega=
+line[0];</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;while ( in.getline(line,max_length)){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cPieza* p= cEjercito::mCrearPieza(line[3],line[4],</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cTablero::mCalcularCasilla(line[0],line[1]) );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( !mObtenerEjercito(line[4]).mAgregarPieza( p ) )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cout &lt;&lt; "oops: Error en la linea " &lt;&lt; line &lt;&lt; endl;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+throw;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mPonerPieza(p, line[0],line[1]);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; return true;</font></font>
+<br><font face="Courier New"><font size=-1>}//fin cargar partida</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//Mueve a las piezas</font></font>
+<br><font face="Courier New"><font size=-1>//pre: La movida debe ser valida.</font></font>
+<br><font face="Courier New"><font size=-1>//post devuelve 1 si es jaque
+y 2 si es mate. 0 en otro caso</font></font>
+<br><font face="Courier New"><font size=-1>void cPartida::mMover (const
+string &amp;c1, const string &amp;c2)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; mnPosVieja= cTablero::mCalcularCasilla(c1);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; mnPosNueva= cTablero::mCalcularCasilla(c2);</font></font>
+<br><font face="Courier New"><font size=-1>//&nbsp;&nbsp; int nC1=mnPosVieja;</font></font>
+<br><font face="Courier New"><font size=-1>//&nbsp;&nbsp; int nC2=mnPosNueva;</font></font>
+<br><font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; //si se trata de un rey
+que se quiere mover dos posiciones se chequea enroque</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if( mTablero.mObtenerPieza(nC1)->mObtenerSimbolo()=='R'
+&amp;&amp; abs(nC2-nC1)==2 )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if(!mEnroque(nC2))</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return;</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cPieza *p=
+mTablero.mSacarPieza(c1);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //Si hayPieza(),
+son de distinto color, porque la mov. es valida.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if ( mTablero.mHayPieza(c2)
+) {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cPieza *pComida= mTablero.mSacarPieza(c2);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mObtenerEjercito( pComida->mObtenerColor() ).mSacarPieza(pComida);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Ahora guardo un referencia de respaldo a la pieza para</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//poder Deshacer.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( mpBackupPieza )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+delete mpBackupPieza;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mpBackupPieza= pComida;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mTablero.mPonerPieza(p,c2);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mCoronarPeon(c2);&nbsp;
+//Si se corono un peon, no pudo haber enroque</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mSetEnroque(c2);//establece
+variables de control para evitar enroque</font></font>
+<br><font face="Courier New"><font size=-1>}//fin mMover</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>Cada llamada solo puede hacerse
+despu&eacute;s de una llamada a mMover().</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font>
+<br><font face="Courier New"><font size=-1>void cPartida::mDeshacerMovida()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mTablero.mPonerPieza(
+mTablero.mSacarPieza(mnPosNueva) ,mnPosVieja);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mTablero.mPonerPieza(mpBackupPieza,mnPosNueva);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //Si se com&iacute;o
+una pieza.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (mpBackupPieza){</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+char color= mpBackupPieza->mObtenerColor();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mObtenerEjercito(color).mAgregarPieza(mpBackupPieza);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mpBackupPieza=
+NULL;</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//Realiza los chequeos necesarios
+que determinan si se puede mover una pieza</font></font>
+<br><font face="Courier New"><font size=-1>//pre: c1 y c2 son casillas
+validas</font></font>
+<br><font face="Courier New"><font size=-1>//post: true o false segun la
+movida sea valida</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mEsMovidaValida(const
+string &amp;sC1, const string &amp;sC2)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; //calcula el codigo
+numerico de las casillas</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; int nC1= cTablero::mCalcularCasilla(sC1);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; int nC2= cTablero::mCalcularCasilla(sC2);</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mEsMovidaValida(nC1,nC2))&nbsp;
+//procedimiento con enteros</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; else</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font>
+<br><font face="Courier New"><font size=-1>}//fin mEsMovidaValida</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//Realiza los chequeos necesarios
+que determinan si se puede mover una pieza</font></font>
+<br><font face="Courier New"><font size=-1>//pre: c1 y c2 son casillas
+validas (igualmente la clase piezas realiza una</font></font>
+<br><font face="Courier New"><font size=-1>//&nbsp;&nbsp;&nbsp;&nbsp; validacion
+con mValidar</font></font>
+<br><font face="Courier New"><font size=-1>//post: true o false segun la
+movida sea valida</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mEsMovidaValida(int
+c1, int c2)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; //Si la casilla
+a mover no esta vacia chequea que tenga una pieza</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; //de distinto color
+del que se va a mover.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if ( !mTablero.mHayPieza(c1)
+||</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mObtenerPieza(c1)->mObtenerColor() != mMueven() )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool bEsAtaque=
+false;&nbsp; //almacena si se trata de un ataque</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //determina si es
+un ataque y chequea que el peon no coma para adelante</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;if (mTablero.mHayPieza(c2))</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; char color1= mTablero.mObtenerPieza(c1)->mObtenerColor();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; char color2= mTablero.mObtenerPieza(c2)->mObtenerColor();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if ( color1
+== color2)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bEsAtaque= true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Para que el peon no coma para adelante</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mTablero.mObtenerPieza(c1)->mObtenerSimbolo()=='P')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if(c1==c2+8 || c2==c1+8)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //Chequea que el
+rey no capture al rey rival</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mTablero.mObtenerPieza(c1)->mObtenerSimbolo()=='R')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mTablero.mHayPieza(c2) &amp;&amp;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mObtenerPieza(c2)->mObtenerSimbolo()=='R')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //determina si el
+camino esta bloqueado</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; bool bEstaBloqueada=
+mHayBloqueo(c1,c2);</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; //si se trata de un rey
+que se quiere mover dos posiciones se chequea enroque</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if( mTablero.mObtenerPieza(c1)->mObtenerSimbolo()=='R'
+&amp;&amp; abs(c2-c1)==2 )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if(!mEnroque(c2))</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //pregunta a la
+pieza si la movida es valida</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if ( mTablero.mObtenerPieza(c1)-></font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEsMovidaValida(c1,c2,bEstaBloqueada,bEsAtaque) )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; return false; //caso por
+defecto</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1>//fin mEsMovidaValida</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>bool cPartida::mChequear(int
+n1,int n2, int nIncremento)</font></font>
+<br><font face="Courier New"><font size=-1>//realiza un chequeo desde mnPosicion
+hasta nPosicion. Y nIncremento indicar&aacute;</font></font>
+<br><font face="Courier New"><font size=-1>//si buscar&aacute; en la misma
+columna(hor o ver) o diagonal(izq o der)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; //chequeo para columnas
+y diagonales</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;for(int i=1;i&lt;8;i++)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;{ if (n1&lt;n2)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {if (n1+(nIncremento*i)
+&lt; n2)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mTablero.mObtenerPieza(n1+(nIncremento*i)) != NULL)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (n2&lt;n1)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {if (n2+(nIncremento*i)
+&lt; n1)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mTablero.mObtenerPieza(n2+(nIncremento*i)) != NULL)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return false;&nbsp;
+//caso por defecto</font></font>
+<br><font face="Courier New"><font size=-1>}&nbsp; //fin cPartida::mChequear</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//pre casillas validas (de 0
+a 63)</font></font>
+<br><font face="Courier New"><font size=-1>//post devuelve true si hay
+una pieza entre el camino de otras dos.</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mHayBloqueo(int
+nC1, int nC2)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //se suma
+1 dada las diferente implementacion del vector de casillas (1a64)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //que hacen
+la pieza y el tablero</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; if (!cPieza::mValidar(nC1,nC2)
+)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; return false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; //busca si las posiciones
+corresponden a la misma diagonal o columna</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (cPieza::mEsMismaLinea(nC1,
+nC2,1) == true) //col. hor.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (mChequear(nC1,nC2,1)==true)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; if (cPieza::mEsMismaLinea(nC1,
+nC2,7) == true) //diag izq</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (mChequear(nC1,nC2,7)==true)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; if (cPieza::mEsMismaLinea(nC1,
+nC2,8) == true) //col vert</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (mChequear(nC1,nC2,8)==true)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (cPieza::mEsMismaLinea(nC1,
+nC2,9) == true) //diag der</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (mChequear(nC1,nC2,9)==true)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; return false; //caso por
+defecto</font></font>
+<br><font face="Courier New"><font size=-1>}//fin mHayBloqueo</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>/*</font></font>
+<br><font face="Courier New"><font size=-1>Se debe llarmar si HayJaque().</font></font>
+<br><font face="Courier New"><font size=-1>Eval&uacute;a y devuelve si
+ninguna movida v&aacute;lida saca al ejercito de Jaque.</font></font>
+<br><font face="Courier New"><font size=-1>*/</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mHayMate()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cEjercito
+e= mObtenerEjercitoActivo();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; for ( cPieza*
+p= e.mPrimera(); p ; p= e.mSiguiente() )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+int nLong;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+int* posiciones;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p->mCalcularMovidasValidas(posiciones,nLong);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for (int i= 0; i &lt; nLong ; i++)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+string c1= cTablero::mCalcularCasilla(p->mObtenerPosicion());</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+string c2= cTablero::mCalcularCasilla(posiciones[i]);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( mEsMovidaValida(p->mObtenerPosicion(),posiciones[i]) &amp;&amp;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+!mEstaClavado(c1,c2) )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+delete[] posiciones;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return true;</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//al coronar un pe&oacute;n,
+el usuario elige en que pieza se convertir&aacute;</font></font>
+<br><font face="Courier New"><font size=-1>char cPartida::mElegir()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; char sOpcion;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; do</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cout &lt;&lt;"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+";</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp; gotoxy(1,23);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cout &lt;&lt;"\nIngrese
+la pieza a coronar D (dama), T (torre), C (caballo), A (alfil)): ";</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; cin >> sOpcion;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; sOpcion=Mayuscula(sOpcion);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; }while (sOpcion!='D'
+&amp;&amp; sOpcion!='T' &amp;&amp; sOpcion!='A' &amp;&amp; sOpcion!='C');</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; return sOpcion;</font></font>
+<br><font face="Courier New"><font size=-1>}//fin mElegir</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>bool cPartida::mCoronarPeon(const
+string &amp;cFinal)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; int casilla=
+cTablero::mCalcularCasilla(cFinal);</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if ( mTablero.mObtenerPieza(casilla)->mObtenerSimbolo()
+== 'P' )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( (msJuega=='b' &amp;&amp; casilla >= 0 &amp;&amp; casilla &lt;= 7)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|| (msJuega=='n' &amp;&amp; casilla >= 56 &amp;&amp; casilla &lt;= 63)
+)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cPieza* aux= mTablero.mObtenerPieza(casilla);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+char color= aux->mObtenerColor();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+int pos= mObtenerEjercitoActivo().mBuscarPieza(aux);</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+char sPieza=mElegir();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cPieza* p= cEjercito::mCrearPieza(sPieza,color,casilla);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mObtenerEjercitoActivo().mPonerPieza( p, pos);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mPonerPieza( p, casilla);</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+/*</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cDama* d= new cDama( color, casilla );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mObtenerEjercitoActivo().mPonerPieza( d, pos);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mTablero.mPonerPieza( d, casilla);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*/</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+delete aux;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return false;</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//Funci&oacute;n que verifica
+que la pieza no este clavada</font></font>
+<br><font face="Courier New"><font size=-1>//o sea que el bando propio
+no quede en jaque al moverse la pieza especificada</font></font>
+<br><font face="Courier New"><font size=-1>//pre: sC1 y sC2 son movimientos
+valido dentro del tablero</font></font>
+<br><font face="Courier New"><font size=-1>//post: true o false seg&uacute;n
+si la pieza a mover est&aacute; clavada</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mEstaClavado
+(const string &amp;sC1, const string &amp;sC2)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mMover(sC1,sC2);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (mHayJaque()
+)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; {mDeshacerMovida();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mDeshacerMovida();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return false;</font></font>
+<br><font face="Courier New"><font size=-1>}//fin mEstaClavado</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>bool cPartida::mHayJaque()</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; char colorActivo
+= msJuega;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; cEjercito
+e= mObtenerEjercito( mContrario(colorActivo) );</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; //Activo
+al contrario para simular un ataque.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mSiguienteMovida();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; for ( cPieza*
+p= e.mPrimera(); p ; p= e.mSiguiente() )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; {</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+int posReyActivo= mObtenerEjercito(colorActivo).mObtenerRey()->mObtenerPosicion();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Si atacan al rey.</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if ( mEsMovidaValida(p->mObtenerPosicion(), posReyActivo)&nbsp; )</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mSiguienteMovida(colorActivo);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; }</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; mSiguienteMovida(colorActivo);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return false;</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//Establece las variables que
+controlan el movimiento de torre y rey</font></font>
+<br><font face="Courier New"><font size=-1>//que evitan el enroque</font></font>
+<br><font face="Courier New"><font size=-1>void cPartida::mSetEnroque(string
+sC1)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; int nC1= cTablero::mCalcularCasilla(sC1);</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; char cpieza=mTablero.mObtenerPieza(nC1)->mObtenerSimbolo();</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (cpieza=='R')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (msJuega=='b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{mEnroqueBlancoIzq=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEnroqueBlancoDer=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (cpieza=='R')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (msJuega=='n')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{mEnroqueNegroIzq=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEnroqueNegroDer=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (cpieza=='T')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (msJuega=='n')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (nC1==0)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEnroqueNegroIzq=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (nC1==7)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEnroqueNegroDer=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (cpieza=='T')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (msJuega=='b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (nC1==56)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEnroqueBlancoIzq=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (nC1==63)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mEnroqueBlancoDer=true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>}//fin mSetEnroque()</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>//chequea a trav&eacute;s del
+color activo y el lado sobre el cual se hace el enroque</font></font>
+<br><font face="Courier New"><font size=-1>//si este es o no valido</font></font>
+<br><font face="Courier New"><font size=-1>bool cPartida::mEnroqueNoValido(char
+sColor, char sLado)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;if (sColor=='b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (sLado=='d')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mEnroqueBlancoDer)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;if (sColor=='b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (sLado=='i')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mEnroqueBlancoIzq)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;if (sColor=='n')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (sLado=='d')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mEnroqueNegroDer)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;if (sColor=='n')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (sLado=='i')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mEnroqueNegroIzq)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp;return false;</font></font>
+<br><font face="Courier New"><font size=-1>}//fin mEnroqueNoValido</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;<font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>bool cPartida::mEnroque(int nDestino)</font></font>
+<br><font face="Courier New"><font size=-1>{</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; char sColor=msJuega;&nbsp;
+//color activo</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; int nRey = mObtenerEjercitoActivo().mObtenerRey()->mObtenerPosicion();</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; int nPos1; //correcta
+ubicaci&oacute;n del rey. Puede no ser la real</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; int nPos2; //correcta
+ubicaci&oacute;n de la torre. Puede no ser la real</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; int nCelda1; //celda
+1 intermedia del movimento del rey</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; int nCelda2; //celda
+2 intermedia del movimento del rey</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; if ( mHayJaque() )&nbsp;&nbsp;
+//no se puede enrocar si se est&aacute; en jaque</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; return false;</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; char lado;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (nDestino-nRey==2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//enroque a la derecha</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{lado='d';</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (sColor=='b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{nPos1=60;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda1=61;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda2=62;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nPos2=63;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (sColor=='n')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{nPos1=4;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda1=5;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda2=6;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nPos2=7;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (nDestino-nRey==-2)</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{lado='i';</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (sColor=='b')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{nPos1=60;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda1=59;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda2=58;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nPos2=56;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (sColor=='n')</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{nPos1=4;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda1=3;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nCelda2=2;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+nPos2=0;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; string sPos1= cTablero::mCalcularCasilla(nPos1);&nbsp;&nbsp;&nbsp;
+//posicion correcta rey</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; string sPos2= cTablero::mCalcularCasilla(nPos2);&nbsp;
+//posicion correcta torre</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; string sCelda1= cTablero::mCalcularCasilla(nCelda1);&nbsp;
+//celda intermedia 1 rey</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; string sCelda2= cTablero::mCalcularCasilla(nCelda2);&nbsp;
+//celda intermedia 2 rey</font></font><font face="Courier New"><font size=-1></font></font>
+<p><font face="Courier New"><font size=-1>&nbsp; //chequear que se cumplan
+todas las condiciones para el enroque</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp; if (mTablero.mObtenerPieza(nPos1)
+!= NULL )&nbsp;&nbsp; //casilla del rey no vacia</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; if (mTablero.mObtenerPieza(nPos2)
+!= NULL )&nbsp; //casilla de la torre no vacia</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp; if (mTablero.mObtenerPieza(nPos1)->mObtenerColor()==sColor)
+//color correcto casilla rey</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp; if
+(mTablero.mObtenerPieza(nPos2)->mObtenerColor()==sColor)//color correcto
+casilla torre</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mTablero.mObtenerPieza(nPos1)->mObtenerSimbolo()=='R') //rey en la
+casilla rey</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (mTablero.mObtenerPieza(nPos2)->mObtenerSimbolo()=='T') //torre en la
+casilla torre</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!mEnroqueNoValido(sColor,lado))&nbsp;&nbsp; //no se han movido rey
+y torre correcta</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!mEstaClavado(sPos1,sCelda1))&nbsp; //el rey no queda en jaque al mover
+a la casilla 1</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!mEstaClavado(sCelda1,sCelda2)) //el rey no queda en jaque al mover
+a la casilla 2</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!mHayBloqueo(nPos1,nPos2))&nbsp;&nbsp; //no hay piezas entremedio del
+rey y torre</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{mMover(sPos2,sCelda1); //mover la torre</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-1>&nbsp;&nbsp; return false;&nbsp;
+//caso por defecto, si no se cumplen todos los chequeos</font></font>
+<br><font face="Courier New"><font size=-1>}</font></font>
+<br><font face="Courier New"><font size=-1></font></font>&nbsp;
+</body>
+</html>

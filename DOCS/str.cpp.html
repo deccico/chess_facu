@@ -1,0 +1,194 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win95; I) [Netscape]">
+   <title>Librer&iacute;a de strings</title>
+</head>
+<body>
+//Proyecto Ajedrez - Grupo 14 - Deccico - Fontdevila
+<br>//archivo str.cpp
+<br>//Librer&iacute;a de manejo de strings
+<p>#include &lt;iostream>
+<br>#include &lt;string>
+<br>using std::string;
+<br>#include "str.h"
+<br>&nbsp;
+<br>&nbsp;
+<p>string Ingresar(char* psChar)
+<br>//realiza un input en un puntero a char
+<br>//y lo pasa a un string
+<br>{
+<br>&nbsp;string sString=" ";
+<br>&nbsp;cin >> psChar;
+<br>&nbsp;sString=psChar;
+<p>&nbsp;return sString;
+<br>}
+<p>//pre: largo del string > 0
+<br>//post: string en minusculas Ej: PeRro123 = perro123
+<br>//descripci&oacute;n: funcion que transforma un char a mayusculas
+<br>//solo afecta a los caracteres entre A..Z. Incluyendo a la &Ntilde;
+<br>char Mayuscula(char sChar)
+<br>{
+<br>&nbsp;char sMayus=sChar;&nbsp;&nbsp; //se le asigna sString para solo
+reemplazar de A..Z
+<p>&nbsp;&nbsp; if (sChar >= 'a' &amp;&amp; sChar &lt;= 'z')
+<br>&nbsp;&nbsp;&nbsp;&nbsp; switch(sChar)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {case 'a': sMayus='A';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case '&ntilde;': sMayus='&Ntilde;';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'b': sMayus='B';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'o': sMayus='O';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'c': sMayus='C';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'p': sMayus='P';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'd': sMayus='D';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'q': sMayus='Q';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'e': sMayus='E';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'r': sMayus='R';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'f': sMayus='F';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 's': sMayus='S';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'g': sMayus='G';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 't': sMayus='T';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'h': sMayus='H';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'u': sMayus='U';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'i': sMayus='I';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'v': sMayus='V';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'j': sMayus='J';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'w': sMayus='W';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'k': sMayus='K';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'x': sMayus='X';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'l': sMayus='L';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'y': sMayus='Y';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'm': sMayus='M';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'z': sMayus='Z';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'n': sMayus='N';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;return sMayus;
+<br>}
+<br>&nbsp;
+<p>//pre: largo del string > 0
+<br>//post: string en minusculas Ej: PeRro123 = perro123
+<p>//descripci&oacute;n: funcion que transforma un string a minusculas
+<br>//solo afecta a los caracteres entre A..Z. Incluyendo a la &Ntilde;
+<br>string Minuscula(string sString)
+<br>{
+<br>&nbsp;string sMinus=sString;&nbsp;&nbsp; //se le asigna sString para
+solo reemplazar de A..Z
+<br>&nbsp;if (sString.length()==0)
+<br>&nbsp;&nbsp; return sString;
+<br>&nbsp;for(int i=0; i&lt;=(int)sString.length(); i++)
+<br>&nbsp;{
+<br>&nbsp;&nbsp; if (sString[i] >= 'A' &amp;&amp; sString[i] &lt;= 'Z')
+<br>&nbsp;&nbsp;&nbsp;&nbsp; switch(sString[i])
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {case 'A': sMinus[i]='a';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'N': sMinus[i]='n';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'B': sMinus[i]='b';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case '&Ntilde;': sMinus[i]='&ntilde;';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'C': sMinus[i]='c';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'O': sMinus[i]='o';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'D': sMinus[i]='d';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'P': sMinus[i]='p';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'E': sMinus[i]='e';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'Q': sMinus[i]='q';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'F': sMinus[i]='f';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'R': sMinus[i]='r';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'G': sMinus[i]='g';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'S': sMinus[i]='s';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'H': sMinus[i]='h';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'T': sMinus[i]='t';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'I': sMinus[i]='i';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'U': sMinus[i]='u';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'J': sMinus[i]='j';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'V': sMinus[i]='v';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'K': sMinus[i]='k';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'W': sMinus[i]='w';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'L': sMinus[i]='l';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'X': sMinus[i]='x';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'M': sMinus[i]='m';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'Y': sMinus[i]='y';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'Z': sMinus[i]='z';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;}
+<br>&nbsp;return sMinus;
+<br>}
+<br>&nbsp;
+<p>//pre: largo del string > 0
+<br>//post: string en minusculas Ej: PeRro123 = perro123
+<p>//descripci&oacute;n: funcion que transforma un string a minusculas
+<br>//solo afecta a los caracteres entre A..Z. Incluyendo a la &Ntilde;
+<br>char Minuscula(char sCaracter)
+<br>{
+<br>&nbsp;&nbsp;&nbsp; //en caso de no encontrar coinciden se devuelve
+el mismo
+<br>&nbsp;&nbsp; char sMinus=sCaracter;
+<p>&nbsp;&nbsp; if (sCaracter >= 'A' &amp;&amp; sCaracter &lt;= 'Z')
+<br>&nbsp;&nbsp;&nbsp;&nbsp; switch(sCaracter)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {case 'A': sMinus='a';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'N': sMinus='n';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'B': sMinus='b';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case '&Ntilde;': sMinus='&ntilde;';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'C': sMinus='c';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'O': sMinus='o';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'D': sMinus='d';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'P': sMinus='p';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'E': sMinus='e';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'Q': sMinus='q';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'F': sMinus='f';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'R': sMinus='r';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'G': sMinus='g';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'S': sMinus='s';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'H': sMinus='h';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'T': sMinus='t';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'I': sMinus='i';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'U': sMinus='u';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'J': sMinus='j';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'V': sMinus='v';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'K': sMinus='k';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'W': sMinus='w';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'L': sMinus='l';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'X': sMinus='x';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'M': sMinus='m';break;&nbsp;&nbsp;&nbsp;&nbsp;
+case 'Y': sMinus='y';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 'Z': sMinus='z';break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+<p>&nbsp;&nbsp; return sMinus;
+<br>}
+<br>&nbsp;
+<p>int Entero(string sString, int ni)
+<br>//transforma, si pued la posicion especificada del string entero
+<br>//en caso de no poder devuelve 0. Por defecto toma la posicion 0.
+<br>{
+<br>&nbsp;if (sString[ni]=='1') return 1;
+<br>&nbsp;if (sString[ni]=='2') return 2;
+<br>&nbsp;if (sString[ni]=='3') return 3;
+<br>&nbsp;if (sString[ni]=='4') return 4;
+<br>&nbsp;if (sString[ni]=='5') return 5;
+<br>&nbsp;if (sString[ni]=='6') return 6;
+<br>&nbsp;if (sString[ni]=='7') return 7;
+<br>&nbsp;if (sString[ni]=='8') return 8;
+<br>&nbsp;if (sString[ni]=='9') return 9;
+<br>&nbsp;return 0;&nbsp; //devuelve 0 si no encontr&cent; una coincidencia
+<br>}
+<p>bool EsEntero(string sString,int i)
+<br>//devuelve true o false segun el valor este entre 0..9
+<br>//si no es de longitud 1 devolver&nbsp; falso
+<br>{
+<br>&nbsp;if (sString[i]>='0' &amp;&amp; sString[i] &lt;= '9')
+<br>&nbsp; return true;
+<br>&nbsp;else
+<br>&nbsp; return false;&nbsp;&nbsp; //caso por defecto
+<br>}
+<br>&nbsp;
+<p>/*
+<br>//&nbsp;&nbsp; //ejemplos de usos compilados y probados
+<br>void main()
+<br>{
+<br>&nbsp;string sPrueba=" ";
+<br>&nbsp;&nbsp; char* psPrueba=" ";
+<p>&nbsp;&nbsp; cout &lt;&lt; "A ver, ingresate algo: \n";
+<br>&nbsp;&nbsp; sPrueba=Ingresar(psPrueba);
+<br>&nbsp;&nbsp; cout &lt;&lt;"\n"&lt;&lt;sPrueba;
+<p>}
+<br>*/
+<br>&nbsp;
+</body>
+</html>
